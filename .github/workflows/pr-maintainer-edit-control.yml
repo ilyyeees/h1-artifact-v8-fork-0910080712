@@ -1,0 +1,44 @@
+name: PR maintainer edit control
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/pr-maintainer-edit-control.yml
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  toggle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask the canonical PR API to enable maintainer edits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          API_URL: ${{ github.api_url }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          response_file="$(mktemp)"
+          status="$(curl --silent --show-error --output "$response_file" --write-out '%{http_code}' \
+            --request PATCH \
+            --header 'Accept: application/vnd.github+json' \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header 'X-GitHub-Api-Version: 2026-03-10' \
+            "$API_URL/repos/$REPOSITORY/pulls/1" \
+            --data '{"maintainer_can_modify":true}')"
+          echo "patch_status=$status"
+          python3 - "$response_file" <<'PY'
+          import json
+          import sys
+          try:
+              body = json.load(open(sys.argv[1], encoding='utf-8'))
+          except Exception:
+              body = {}
+          print('returned_maintainer_can_modify=' + str(body.get('maintainer_can_modify')).lower())
+          print('message=' + str(body.get('message', '')))
+          PY
+
