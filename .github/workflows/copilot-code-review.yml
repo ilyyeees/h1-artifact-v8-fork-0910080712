@@ -9,24 +9,5 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Stage trusted external-fork calibration
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
-      - name: Preserve trusted external-fork calibration
-        shell: bash
-        run: |
-          mkdir -p "$RUNNER_TEMP/no01-review-calibration"
-          cp -R .github/review-calibration/. "$RUNNER_TEMP/no01-review-calibration/"
-
       - name: Check out the pull request under review
         uses: actions/checkout@v4
-
-      - name: Install trusted external-fork calibration
-        shell: bash
-        run: |
-          mkdir -p .github/skills/code-review
-          cp "$RUNNER_TEMP/no01-review-calibration/SKILL.md" .github/skills/code-review/SKILL.md
-          cp "$RUNNER_TEMP/no01-review-calibration/create-review-receipt.js" .github/skills/code-review/create-review-receipt.js
-          cp "$RUNNER_TEMP/no01-review-calibration/copilot-instructions.md" .github/copilot-instructions.md
