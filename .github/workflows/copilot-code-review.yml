@@ -30,5 +30,3 @@ jobs:
           cp "$RUNNER_TEMP/no01-review-calibration/SKILL.md" .github/skills/code-review/SKILL.md
           cp "$RUNNER_TEMP/no01-review-calibration/create-review-receipt.js" .github/skills/code-review/create-review-receipt.js
           cp "$RUNNER_TEMP/no01-review-calibration/copilot-instructions.md" .github/copilot-instructions.md
-          node "$RUNNER_TEMP/no01-review-calibration/create-review-receipt.js" \
-            | tee .github/no01-external-fork-receipt.txt
